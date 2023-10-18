@@ -2,7 +2,6 @@ import {
   time,
   loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
@@ -76,6 +75,14 @@ describe("Faucet", function () {
         await expect(
           faucet.connect(otherAccount).withdraw(amount)
         ).to.changeEtherBalance(otherAccount, amount);
+      });
+      it("Should transfer all funds to owner", async function () {
+        const { faucet, owner, deposited } = await loadFixture(deployFixture);
+
+        await expect(faucet.connect(owner).withdrawAll()).to.changeEtherBalance(
+          owner,
+          deposited
+        );
       });
     });
   });
